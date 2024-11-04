@@ -1095,7 +1095,7 @@ MonoBehaviour:
       m_Action: Player Controls
       m_Flags: 8
     m_Flags: 0
-  animator: {fileID: 0}
+  animator: {fileID: 550232424}
   spriteRenderer: {fileID: 550232419}
   groundCheck: {fileID: 0}
   groundLayer:
