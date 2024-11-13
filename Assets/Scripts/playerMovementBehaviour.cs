@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class playerMovementBehaviour : MonoBehaviour
 {
-    [SerializeField] public InputAction playerControls;
+    [SerializeField] public InputAction PlayerControls;
 
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -13,8 +13,10 @@ public class playerMovementBehaviour : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
 
-    private Vector2 movementDirection;
+    private bool isGrounded;
+    private Vector2 movementInput;
     public float moveSpeed = 5f;
+    public float jumpForce = 10f;
 
 
     void Start()
@@ -23,22 +25,29 @@ public class playerMovementBehaviour : MonoBehaviour
     }
     private void OnEnable()
     {
-        playerControls.Enable();
+        PlayerControls.Enable();
     }
     private void OnDisable()
     {
-        playerControls.Disable();
+        PlayerControls.Disable();
     }
     // Update is called once per frame
     void Update()
     {
         // getting moveement inputs and sending to animator
-        movementDirection = playerControls.ReadValue<Vector2>();
-        Debug.Log(movementDirection);
-        animator.SetFloat("Horizontal", movementDirection.x);
-        animator.SetFloat("Vertical", movementDirection.y);
-        animator.SetFloat("Speed", movementDirection.sqrMagnitude);
+        movementInput = PlayerControls.ReadValue<Vector2>();
+        animator.SetFloat("Horizontal", movementInput.x);
+        animator.SetFloat("Vertical", movementInput.y);
+        animator.SetFloat("Speed", movementInput.sqrMagnitude);
+        animator.SetBool("IsJumping", !isGrounded);
+        //movement
+        rb.velocity = new Vector2(movementInput.x * moveSpeed, rb.velocity.y);
 
+        //jumping
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKey(KeyCode.W)) && isGrounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
         //flipping sprite
         if (animator.GetFloat("Horizontal") < 0)
         {
@@ -52,11 +61,12 @@ public class playerMovementBehaviour : MonoBehaviour
     private Rigidbody2D rb;
     void FixedUpdate()
     {
-        //actual movement here
-        //rb.velocity = new Vector2(movementDirection.x * moveSpeed * Time.fixedDeltaTime, movementDirection.y * moveSpeed * Time.fixedDeltaTime); 
+        
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
     private bool IsGrounded()
     {
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
+    
 }
