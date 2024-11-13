@@ -19,27 +19,23 @@ public class ArrowBehaviour : MonoBehaviour
     }
     private void Update()
     {
-        
+        switch (arrowDirection)
+        {
+            case CardinalDirection.Up:
+                transform.eulerAngles = new Vector3(0, 0, 0); break;
+            case CardinalDirection.Left:
+                transform.eulerAngles = new Vector3(0, 0, 90); break;
+            case CardinalDirection.Right:
+                transform.eulerAngles = new Vector3(0, 0, -90); break;
+            case CardinalDirection.Down:
+                transform.eulerAngles = new Vector3(0, 0, 180); break;
+
+        }
     }
     // Start is called before the first frame update
     void Start()
     {
-        switch (arrowDirection)
-        {
-            case CardinalDirection.Up:
-                transform.Rotate(Vector2.up);
-                break;
-            case CardinalDirection.Left:
-                transform.Rotate(Vector2.left);
-                break;
-            case CardinalDirection.Right:
-                transform.Rotate(Vector2.right);
-                break;
-            case CardinalDirection.Down:
-                transform.Rotate(Vector2.down);
-                break;
-
-        }
+        
         player = playerMovementBehaviour.instance;
     }
 
