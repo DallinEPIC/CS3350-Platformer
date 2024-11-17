@@ -6,9 +6,11 @@ using UnityEngine;
 public class ArrowBehaviour : MonoBehaviour
 {
     [SerializeField] private Animator animator;
-    [SerializeField] private float pushForce;
+    [SerializeField] private int pushForce;
     [SerializeField] private CardinalDirection arrowDirection;
     private playerMovementBehaviour player;
+
+    public float cooldownTime = 2f; // Duration of the cooldown in seconds
 
     public enum CardinalDirection
     {
@@ -31,25 +33,29 @@ public class ArrowBehaviour : MonoBehaviour
                 transform.eulerAngles = new Vector3(0, 0, 180); break;
 
         }
+
+
+
     }
-    // Start is called before the first frame update
+    
     void Start()
     {
-        
         player = playerMovementBehaviour.instance;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player")) // Ensure only the player triggers this
+        if (collision.CompareTag("Player"))
         {
+            BoostPlayer();
             animator.SetBool("isTouching", true);
-            //Debug.Log("touching");
-
-            // Convert arrow direction to Vector2 and apply as external force
-            Vector2 pushDirection = arrowDirection.ToVector2() * pushForce;
-            player.AddExternalForce(pushDirection);
         }
+    }
+    private void BoostPlayer()
+    {
+        // Convert arrow direction to Vector2 and apply as external force
+        Vector2 pushDirection = arrowDirection.ToVector2() * pushForce;
+        player.AddExternalForce(pushDirection);
     }
 
     private void OnTriggerExit2D(Collider2D collision)

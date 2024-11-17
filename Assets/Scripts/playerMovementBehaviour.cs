@@ -12,14 +12,17 @@ public class playerMovementBehaviour : MonoBehaviour
 
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
-    public static playerMovementBehaviour instance;
-    public Rigidbody2D rb;
+    [HideInInspector] public static playerMovementBehaviour instance;
+    [HideInInspector] public Rigidbody2D rb;
 
+    private bool hasDoubleJump;
     private bool isGrounded;
-    private Vector2 movementInput;
+    public Vector2 MovementInput;
     private Vector2 externalForce; // New variable for external forces
-    public float moveSpeed = 5f;
-    public float jumpForce = 10f;
+    public float moveSpeed = 5f; // Multiplier for speed
+    public float jumpForce = 10f; // Multiplier for jumping
+    public float fallMultiplier = 2.5f; // Gravity multiplier for falling
+    public float lowJumpMultiplier = 2f; // Gravity multiplier for low-height jumps
 
     private void Awake()
     {
@@ -40,29 +43,51 @@ public class playerMovementBehaviour : MonoBehaviour
     void Update()
     {
         // Getting movement inputs and sending to animator
-        movementInput = PlayerControls.ReadValue<Vector2>();
-        animator.SetFloat("Horizontal", movementInput.x);
-        animator.SetFloat("Vertical", movementInput.y);
-        animator.SetFloat("Speed", movementInput.sqrMagnitude);
-        animator.SetBool("IsJumping", !isGrounded);
+        MovementInput = PlayerControls.ReadValue<Vector2>();
+        animator.SetFloat("Horizontal", MovementInput.x);
+        animator.SetFloat("Vertical", MovementInput.y);
+        animator.SetFloat("Speed", MovementInput.sqrMagnitude);
+        animator.SetBool("isJumping", !isGrounded);
 
-        // Movement: Combine player input and external forces
-        Vector2 movementForce = new Vector2(movementInput.x * moveSpeed, rb.velocity.y);
-        rb.velocity = movementForce + externalForce;
-
-        // Clamp velocity to prevent excessive speeds
-        rb.velocity = new Vector2(
-            Mathf.Clamp(rb.velocity.x, -moveSpeed, moveSpeed),
-            Mathf.Clamp(rb.velocity.y, -jumpForce * 1.5f, jumpForce * 1.5f)
-        );
-
-        // Reduce external force gradually for smoother deceleration
-        externalForce = Vector2.Lerp(externalForce, Vector2.zero, Time.deltaTime * 5f);
 
         // Jumping
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKey(KeyCode.W)) && isGrounded)
+
+        // Check if the player is falling
+        if (rb.velocity.y < 0)
+        {
+            // Apply the fall multiplier to make falling faster
+            rb.gravityScale = fallMultiplier;
+        }
+        // Check if the player is jumping but has released the jump button
+        else if (rb.velocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            // Apply the low jump multiplier to make jumps shorter when the button is released early
+            rb.gravityScale = lowJumpMultiplier;
+        }
+        else
+        {
+            // Reset gravity to the default value
+            rb.gravityScale = 1f;
+        }
+        //grounded check
+        if (isGrounded)
+        {
+            hasDoubleJump = true;
+        }
+        //normal jump
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            animator.SetTrigger("Jump");
+        }
+        //double jump
+        else if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !isGrounded && hasDoubleJump)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            hasDoubleJump = false;
+            animator.SetTrigger("DoubleJump");
+            
+            
         }
 
         // Flipping sprite
@@ -79,11 +104,19 @@ public class playerMovementBehaviour : MonoBehaviour
     void FixedUpdate()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-    }
+        // Movement: Combine player input and external forces
+        Vector2 movementForce = new Vector2(MovementInput.x * moveSpeed, rb.velocity.y);
+        rb.velocity = movementForce + externalForce;
 
-    private bool IsGrounded()
-    {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        // Clamp velocity to prevent excessive speeds
+        rb.velocity = new Vector2(
+            Mathf.Clamp(rb.velocity.x, -moveSpeed, moveSpeed),
+            Mathf.Clamp(rb.velocity.y, -jumpForce * 1.5f, jumpForce * 1.5f)
+        );
+
+        // Reduce external force gradually for smoother deceleration
+        externalForce = Vector2.Lerp(externalForce, Vector2.zero, Time.deltaTime * 5f);
+
     }
 
     // New method to add external forces (e.g., from arrows)
