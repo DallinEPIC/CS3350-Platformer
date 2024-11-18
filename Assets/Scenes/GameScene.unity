@@ -3866,7 +3866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scoreUIText: {fileID: 1836696180}
-  score: 0
+  fruitCollected: 0
 --- !u!1 &626417523
 GameObject:
   m_ObjectHideFlags: 0
@@ -4043,7 +4043,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointsWorth: 5
   delay: 0
 --- !u!82 &657009481
 AudioSource:
@@ -4443,7 +4442,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointsWorth: 5
   delay: 0
 --- !u!82 &906652046
 AudioSource:
@@ -4589,7 +4587,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointsWorth: 5
   delay: 0
 --- !u!82 &961621964
 AudioSource:
@@ -4824,7 +4821,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointsWorth: 5
   delay: 0
 --- !u!82 &1021145596
 AudioSource:
@@ -5090,7 +5086,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointsWorth: 5
   delay: 0
 --- !u!82 &1175773342
 AudioSource:
@@ -48435,6 +48430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   victoryPanel: {fileID: 2024939439}
+  _nextLevelName: Level2
 --- !u!1 &1996096922
 GameObject:
   m_ObjectHideFlags: 0
@@ -48637,7 +48633,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2074735933}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.3547068, y: -0.1616, z: -10}
+  m_LocalPosition: {x: -4.53, y: -0.16, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

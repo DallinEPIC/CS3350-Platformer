@@ -7,17 +7,18 @@ public class PlayerController : MonoBehaviour
 {
     [HideInInspector] public static PlayerController instance;
     [SerializeField] private TextMeshProUGUI _scoreUIText;
-    [HideInInspector] public int score;
+    [HideInInspector] public int fruitCollected;
     void Start()
     {
         instance = this;
-        score = 0;
+        fruitCollected = 0;
+        DontDestroyOnLoad(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        _scoreUIText.text = $"{score:D3}";
+        _scoreUIText.text = $"{fruitCollected:D3}";
     }
 
     public void Die()
