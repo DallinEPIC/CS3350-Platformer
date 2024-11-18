@@ -3844,6 +3844,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 424388013}
+  - component: {fileID: 424388014}
   m_Layer: 0
   m_Name: SpawnPoint
   m_TagString: Untagged
@@ -3867,6 +3868,20 @@ Transform:
   m_Father: {fileID: 751964297}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &424388014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424388012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d68e3e5b593badc4584658bfabfc0742, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TotalFruit: 0
+  _spawnPoint: {fileID: 424388013}
 --- !u!1 &550232418
 GameObject:
   m_ObjectHideFlags: 0
@@ -4114,11 +4129,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   rb: {fileID: 0}
+  isSliding: 0
   MovementInput: {x: 0, y: 0}
   moveSpeed: 7
   jumpForce: 8
   fallMultiplier: 2.5
   lowJumpMultiplier: 1.5
+  wallSlideMultiplier: 0.5
 --- !u!114 &550232426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4600,6 +4617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d68e3e5b593badc4584658bfabfc0742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TotalFruit: 0
   _spawnPoint: {fileID: 424388013}
 --- !u!4 &751964297
 Transform:
@@ -49062,7 +49080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   victoryPanel: {fileID: 2024939439}
-  _nextLevelName: 
+  _nextLevelName: '"Level2"'
 --- !u!1 &1996096922
 GameObject:
   m_ObjectHideFlags: 0

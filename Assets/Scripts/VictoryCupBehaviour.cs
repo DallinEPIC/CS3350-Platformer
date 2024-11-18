@@ -26,7 +26,13 @@ public class VictoryCupBehaviour : MonoBehaviour
             Debug.Log("YOU WIN");
             victoryPanel.gameObject.SetActive(true);
             _animator.SetTrigger("Victory");
-            SceneManager.LoadScene(_nextLevelName);
+            StartCoroutine(WaitAndLoadNextLevel());
         }
+    }
+
+    private IEnumerator WaitAndLoadNextLevel()
+    {
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene(_nextLevelName);
     }
 }

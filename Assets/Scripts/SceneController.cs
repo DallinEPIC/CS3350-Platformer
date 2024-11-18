@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SceneController : MonoBehaviour
 {
+    [HideInInspector] public int TotalFruit;
     public static SceneController instance;
     [SerializeField] public Transform _spawnPoint;
     void Start()
@@ -11,7 +12,11 @@ public class SceneController : MonoBehaviour
         instance = this;
     }
 
-    // Update is called once per frame
+    private void Awake()
+    {
+        TotalFruit = 0;
+    }
+
     void Update()
     {
         

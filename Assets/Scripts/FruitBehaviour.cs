@@ -11,6 +11,7 @@ public class FruitBehaviour : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        SceneController.instance.TotalFruit += 1;
     }
     void Collect()
     {

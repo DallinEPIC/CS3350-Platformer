@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _scoreUIText.text = $"{fruitCollected:D3}";
+        _scoreUIText.text = $"{fruitCollected:D2} / {SceneController.instance.TotalFruit:D2}";
     }
 
     public void Die()
