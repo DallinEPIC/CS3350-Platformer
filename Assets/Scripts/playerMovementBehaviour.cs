@@ -25,6 +25,7 @@ public class playerMovementBehaviour : MonoBehaviour
     public float fallMultiplier = 2.5f; // Gravity multiplier for falling
     public float lowJumpMultiplier = 2f; // Gravity multiplier for low-height jumps
     public float wallSlideMultiplier = 0.5f; // Gravity multiplier for sliding on walls
+    public bool facingRight;
     private void Awake()
     {
         instance = this;
@@ -82,23 +83,23 @@ public class playerMovementBehaviour : MonoBehaviour
             animator.SetTrigger("Jump");
         }
         //double jump
-        else if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !isGrounded && hasDoubleJump)
+        else if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !isGrounded && hasDoubleJump && !isSliding)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             hasDoubleJump = false;
             animator.SetTrigger("DoubleJump");
-            
-            
         }
 
         // Flipping sprite
         if (animator.GetFloat("Horizontal") < 0)
         {
             spriteRenderer.flipX = true;
+            facingRight = false;
         }
         else
         {
             spriteRenderer.flipX = false;
+            facingRight = true;
         }
     }
 
@@ -129,15 +130,43 @@ public class playerMovementBehaviour : MonoBehaviour
     {
         foreach (ContactPoint2D contactPoint in collision.contacts)
         {
-            if(Mathf.Abs(contactPoint.normal.x) > 0.5f)
-            {
-                
-            }
-            if (Mathf.Abs(contactPoint.normal.y) > 0.5f && !isGrounded)
-            {
-                isSliding = true;
+            // Draw the normal vector for each contact point
+            Vector3 contactPosition = contactPoint.point; // Get the contact point position
+            Vector3 normalEnd = contactPosition + (Vector3)contactPoint.normal; // Calculate the end point of the normal
+            Debug.DrawLine(contactPosition, normalEnd, Color.red, 2.5f); // Draw the normal as a red line
 
-                rb.gravityScale = wallSlideMultiplier;
+
+            if (contactPoint.collider.CompareTag("Ground")) {
+                //ground checking
+                if (Mathf.Abs(contactPoint.normal.y) > 0.5f)
+                {
+                    animator.SetBool("WallSlide", false);
+                    isSliding = false;
+                }
+                //wall checking
+                if (Mathf.Abs(contactPoint.normal.x) > 0.5f && !isGrounded)
+                {
+                    isSliding = true;
+                    Debug.Log($"wall sliding: {isSliding}");
+                    animator.SetBool("WallSlide", true);
+                    rb.gravityScale = wallSlideMultiplier;
+                    hasDoubleJump = true;
+                    //wall jump
+                    if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !isGrounded && isSliding)
+                    {
+                        if(facingRight)
+                        {
+                            rb.velocity = new Vector2(1, jumpForce);
+                        }
+                        else
+                        {
+                            rb.velocity = new Vector2(-1, jumpForce);
+                        }
+                        
+                        animator.SetTrigger("WallJump");
+                    }
+
+                }
             }
         }
     }

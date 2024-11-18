@@ -10,6 +10,7 @@ public class SceneController : MonoBehaviour
     void Start()
     {
         instance = this;
+        TotalFruit = 0;
     }
 
     private void Awake()
