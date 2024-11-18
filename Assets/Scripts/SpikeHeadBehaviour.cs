@@ -5,26 +5,27 @@ using static UnityEngine.ParticleSystem;
 
 public class SpikeHeadBehaviour : MonoBehaviour
 {
-    public Transform target;
-    float time;
+    [SerializeField] private GameObject _targetObject;
     [SerializeField] private float _timeToReachTarget;
     private Vector3 _startPosition;
     private Vector3 _targetPosition;
     private float _timeElapsed;
-    private bool sawPlayer;
+    private bool _sawPlayer;
+    private bool _goingUp;
 
 
     void Start()
     {
-        time = 1;
+        _targetObject.SetActive(false);
         _startPosition = transform.position;
-        _targetPosition = target.position;
+        _targetPosition = _targetObject.transform.position;
     }
 
     void Update()
     {
-        if (sawPlayer)
+        if (_sawPlayer)
         {
+            _timeElapsed += Time.deltaTime;
             Move();
         }
     }
@@ -33,20 +34,32 @@ public class SpikeHeadBehaviour : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            sawPlayer = true;
+            _sawPlayer = true;
         }
     }
     private void Move()
     {
-        transform.position = Vector2.Lerp(transform.position, target.transform.position, time);
-        if (transform.position.y <= target.position.y)
+        float interpolation = _timeElapsed / _timeToReachTarget;
+        if (!_goingUp) //Going down
         {
-
+            transform.position = Vector2.Lerp(_startPosition, _targetPosition, interpolation);
+        }
+        else //going up
+        {
+            transform.position = Vector2.Lerp(_targetPosition, _startPosition, interpolation);
+        }
+        
+        if (interpolation >= 1) //If reached bottom or top
+        {
+            if (_goingUp) _sawPlayer = false; //reached top, reset _sawPlayer
+            _goingUp = !_goingUp; //Start going up if hit bottom, or reset to false if reached top
+            _timeElapsed = 0;
         }
     }
     //hitting the player
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("hit player");
+        Debug.Log("Spike head hit player");
+        PlayerController.instance.Die();
     }
 }

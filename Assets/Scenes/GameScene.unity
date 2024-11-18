@@ -3616,6 +3616,7 @@ GameObject:
   - component: {fileID: 550232423}
   - component: {fileID: 550232425}
   - component: {fileID: 550232424}
+  - component: {fileID: 550232426}
   m_Layer: 0
   m_Name: player
   m_TagString: Player
@@ -3852,6 +3853,20 @@ MonoBehaviour:
   jumpForce: 8
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
+--- !u!114 &550232426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550232418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d35cb6ead9757a44aaba7c1a89138072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scoreUIText: {fileID: 1836696180}
+  score: 0
 --- !u!1 &626417523
 GameObject:
   m_ObjectHideFlags: 0
@@ -4028,6 +4043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointsWorth: 5
   delay: 0
 --- !u!82 &657009481
 AudioSource:
@@ -4427,6 +4443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointsWorth: 5
   delay: 0
 --- !u!82 &906652046
 AudioSource:
@@ -4572,6 +4589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointsWorth: 5
   delay: 0
 --- !u!82 &961621964
 AudioSource:
@@ -4806,6 +4824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointsWorth: 5
   delay: 0
 --- !u!82 &1021145596
 AudioSource:
@@ -5071,6 +5090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96791bb4930302b4795e06d247d4dfcd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointsWorth: 5
   delay: 0
 --- !u!82 &1175773342
 AudioSource:
@@ -5379,8 +5399,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99a22cb8790568c4fa2d781fa7d4083f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 204854178}
-  _timeToReachTarget: 1
+  _targetObject: {fileID: 204854177}
+  _timeToReachTarget: 0.25
 --- !u!61 &1272005036
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -48617,7 +48637,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2074735933}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.53, y: -0.16, z: -10}
+  m_LocalPosition: {x: -3.3547068, y: -0.1616, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

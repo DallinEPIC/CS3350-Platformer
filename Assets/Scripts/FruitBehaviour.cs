@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FruitBehaviour : MonoBehaviour
 {
+    [SerializeField] private int pointsWorth;
     public float delay; //seconds
     private Animator animator;
     private AudioSource audioSource;
@@ -14,6 +15,7 @@ public class FruitBehaviour : MonoBehaviour
     }
     void Collect()
     {
+        PlayerController.instance.score += pointsWorth;
         animator.SetTrigger("FruitCollect");
         audioSource.Play();
         float animTime = animator.GetCurrentAnimatorStateInfo(0).length;
