@@ -8,11 +8,15 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public static PlayerController instance;
     [SerializeField] private TextMeshProUGUI _scoreUIText;
     [HideInInspector] public int fruitCollected;
+    private Transform spawnPoint;
+    
     void Start()
     {
         instance = this;
         fruitCollected = 0;
         DontDestroyOnLoad(this);
+        spawnPoint = SceneController.instance._spawnPoint;
+        spawnPoint.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -24,5 +28,7 @@ public class PlayerController : MonoBehaviour
     public void Die()
     {
         Debug.Log("Player died");
+        transform.position = spawnPoint.position;
     }
+
 }
