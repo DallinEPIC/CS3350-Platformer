@@ -17,13 +17,14 @@ public class playerMovementBehaviour : MonoBehaviour
 
     private bool hasDoubleJump;
     private bool isGrounded;
+    public bool isSliding;
     public Vector2 MovementInput;
     private Vector2 externalForce; // New variable for external forces
     public float moveSpeed = 5f; // Multiplier for speed
     public float jumpForce = 10f; // Multiplier for jumping
     public float fallMultiplier = 2.5f; // Gravity multiplier for falling
     public float lowJumpMultiplier = 2f; // Gravity multiplier for low-height jumps
-
+    public float wallSlideMultiplier = 0.5f; // Gravity multiplier for sliding on walls
     private void Awake()
     {
         instance = this;
@@ -53,7 +54,7 @@ public class playerMovementBehaviour : MonoBehaviour
         // Jumping
 
         // Check if the player is falling
-        if (rb.velocity.y < 0)
+        if (rb.velocity.y < 0 && !isSliding)
         {
             // Apply the fall multiplier to make falling faster
             rb.gravityScale = fallMultiplier;
@@ -123,5 +124,21 @@ public class playerMovementBehaviour : MonoBehaviour
     public void AddExternalForce(Vector2 force)
     {
         externalForce += force;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        foreach (ContactPoint2D contactPoint in collision.contacts)
+        {
+            if(Mathf.Abs(contactPoint.normal.x) > 0.5f)
+            {
+                
+            }
+            if (Mathf.Abs(contactPoint.normal.y) > 0.5f && !isGrounded)
+            {
+                isSliding = true;
+
+                rb.gravityScale = wallSlideMultiplier;
+            }
+        }
     }
 }
