@@ -33,6 +33,10 @@ public class VictoryCupBehaviour : MonoBehaviour
     private IEnumerator WaitAndLoadNextLevel()
     {
         yield return new WaitForSeconds(2);
-        SceneManager.LoadScene(_nextLevelName);
+        PlayerController.instance.gameObject.SetActive(false);
+        if (_nextLevelName != "")
+        {
+            SceneManager.LoadScene(_nextLevelName);
+        }
     }
 }

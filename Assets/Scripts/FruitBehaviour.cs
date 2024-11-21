@@ -15,7 +15,9 @@ public class FruitBehaviour : MonoBehaviour
     }
     void Collect()
     {
-        PlayerController.instance.fruitCollected += 1;
+        SceneController.instance.fruitCollected += 1;
+        PlayerController.instance.totalFruitCollected += 1;
+        GetComponent<CircleCollider2D>().enabled = false;
         animator.SetTrigger("FruitCollect");
         audioSource.Play();
         float animTime = animator.GetCurrentAnimatorStateInfo(0).length;
