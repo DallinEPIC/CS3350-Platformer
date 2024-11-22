@@ -13,7 +13,7 @@ public class SceneController : MonoBehaviour
     void Start()
     {
         Transform player = PlayerController.instance.GetComponent<Transform>();
-        player = spawnPoint.transform;
+        player.position = spawnPoint.position;
         PlayerController.instance.gameObject.SetActive(true);
     }
 
