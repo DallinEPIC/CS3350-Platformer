@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FruitBehaviour : MonoBehaviour
 {
@@ -31,4 +32,6 @@ public class FruitBehaviour : MonoBehaviour
             Collect();
         }
     }
+    
+
 }

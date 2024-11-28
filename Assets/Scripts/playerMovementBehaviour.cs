@@ -7,17 +7,20 @@ public class playerMovementBehaviour : MonoBehaviour
 {
     [SerializeField] public InputAction PlayerControls;
 
-    [SerializeField] private Animator animator;
+    [SerializeField] public Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     [SerializeField] private Transform groundCheck;
+    [SerializeField] private Transform wallCheck;
     [SerializeField] private LayerMask groundLayer;
     [HideInInspector] public static playerMovementBehaviour instance;
     [HideInInspector] public Rigidbody2D rb;
+    public Transform endpoint;
 
+    private AudioSource audioSource;
     private bool hasDoubleJump;
     private bool isGrounded;
-    public bool isSliding;
+    private bool isSliding;
     public Vector2 MovementInput;
     private Vector2 externalForce; // New variable for external forces
     public float moveSpeed = 5f; // Multiplier for speed
@@ -25,11 +28,12 @@ public class playerMovementBehaviour : MonoBehaviour
     public float fallMultiplier = 2.5f; // Gravity multiplier for falling
     public float lowJumpMultiplier = 2f; // Gravity multiplier for low-height jumps
     public float wallSlideMultiplier = 0.5f; // Gravity multiplier for sliding on walls
-    public bool facingRight;
+    [HideInInspector] public bool facingRight;
     private void Awake()
     {
         instance = this;
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
@@ -76,11 +80,16 @@ public class playerMovementBehaviour : MonoBehaviour
         {
             hasDoubleJump = true;
         }
+        if(isSliding == false)
+        {
+            animator.SetBool("WallSlide", false);
+        }
         //normal jump
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             animator.SetTrigger("Jump");
+            JumpNoise();
         }
         //double jump
         else if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !isGrounded && hasDoubleJump && !isSliding)
@@ -88,24 +97,50 @@ public class playerMovementBehaviour : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             hasDoubleJump = false;
             animator.SetTrigger("DoubleJump");
+            JumpNoise();
         }
+        //wallJump
+        else if (isSliding)
+        {
+            Debug.Log($"wall sliding: {isSliding}");
+            animator.SetBool("WallSlide", true);
+            rb.gravityScale = wallSlideMultiplier;
+            hasDoubleJump = true;
+            //wall jump
+            if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !isGrounded && isSliding)
+            {
+                AddExternalForce(new Vector2(-MovementInput.x * 10f, jumpForce));
+                animator.SetTrigger("WallJump");
+                JumpNoise();
+            }
+        }
+
+        //CheatCode;
+        if (Input.GetKeyDown(KeyCode.V))
+            transform.position = endpoint.position;
+
 
         // Flipping sprite
         if (animator.GetFloat("Horizontal") < 0)
         {
             spriteRenderer.flipX = true;
             facingRight = false;
+            wallCheck.position = transform.position - new Vector3(0.4f, 0);
         }
         else
         {
             spriteRenderer.flipX = false;
             facingRight = true;
+            wallCheck.position = transform.position + new Vector3(0.4f, 0);
         }
     }
 
     void FixedUpdate()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+        Debug.Log($"grounded = {isGrounded}");
+        isSliding = Physics2D.OverlapCircle(wallCheck.position, 0.2f, groundLayer);
+        
         // Movement: Combine player input and external forces
         Vector2 movementForce = new Vector2(MovementInput.x * moveSpeed, rb.velocity.y);
         rb.velocity = movementForce + externalForce;
@@ -118,7 +153,6 @@ public class playerMovementBehaviour : MonoBehaviour
 
         // Reduce external force gradually for smoother deceleration
         externalForce = Vector2.Lerp(externalForce, Vector2.zero, Time.deltaTime * 5f);
-
     }
 
     // New method to add external forces (e.g., from arrows)
@@ -126,48 +160,9 @@ public class playerMovementBehaviour : MonoBehaviour
     {
         externalForce += force;
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void JumpNoise()
     {
-        foreach (ContactPoint2D contactPoint in collision.contacts)
-        {
-            // Draw the normal vector for each contact point
-            Vector3 contactPosition = contactPoint.point; // Get the contact point position
-            Vector3 normalEnd = contactPosition + (Vector3)contactPoint.normal; // Calculate the end point of the normal
-            Debug.DrawLine(contactPosition, normalEnd, Color.red, 2.5f); // Draw the normal as a red line
-
-
-            if (contactPoint.collider.CompareTag("Ground")) {
-                //ground checking
-                if (Mathf.Abs(contactPoint.normal.y) > 0.5f)
-                {
-                    animator.SetBool("WallSlide", false);
-                    isSliding = false;
-                }
-                //wall checking
-                if (Mathf.Abs(contactPoint.normal.x) > 0.5f && !isGrounded)
-                {
-                    isSliding = true;
-                    Debug.Log($"wall sliding: {isSliding}");
-                    animator.SetBool("WallSlide", true);
-                    rb.gravityScale = wallSlideMultiplier;
-                    hasDoubleJump = true;
-                    //wall jump
-                    if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && !isGrounded && isSliding)
-                    {
-                        if(facingRight)
-                        {
-                            rb.velocity = new Vector2(1, jumpForce);
-                        }
-                        else
-                        {
-                            rb.velocity = new Vector2(-1, jumpForce);
-                        }
-                        
-                        animator.SetTrigger("WallJump");
-                    }
-
-                }
-            }
-        }
+        audioSource.Play();
     }
+    
 }

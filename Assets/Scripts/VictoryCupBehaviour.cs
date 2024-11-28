@@ -26,6 +26,7 @@ public class VictoryCupBehaviour : MonoBehaviour
             Debug.Log("YOU WIN");
             victoryPanel.gameObject.SetActive(true);
             _animator.SetTrigger("Victory");
+            GetComponent<AudioSource>().Play();
             StartCoroutine(WaitAndLoadNextLevel());
         }
     }
